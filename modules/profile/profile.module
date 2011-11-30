@@ -281,12 +281,10 @@ function profile_view_field($user, $field) {
         );
         return strtr($format, $replace);
       case 'list':
-        $values = split("[,\n\r]", $value);
+        $values = preg_split("[\r\n]", $value, PREG_SPLIT_NO_EMPTY);
         $fields = array();
         foreach ($values as $value) {
-          if ($value = trim($value)) {
             $fields[] = $browse ? l($value, 'profile/'. $field->name .'/'. $value) : check_plain($value);
-          }
         }
         return implode(', ', $fields);
     }
@@ -392,11 +390,9 @@ function profile_form_profile($edit, $user, $category, $register = FALSE) {
         break;
       case 'selection':
         $options = $field->required ? array() : array('--');
-        $lines = split("[\n\r]", $field->options);
+        $lines = preg_split("[\r\n]", $field->options, PREG_SPLIT_NO_EMPTY);
         foreach ($lines as $line) {
-          if ($line = trim($line)) {
-            $options[$line] = $line;
-          }
+          $options[$line] = $line;
         }
         $fields[$category][$field->name] = array('#type' => 'select',
           '#title' => check_plain($field->title),
